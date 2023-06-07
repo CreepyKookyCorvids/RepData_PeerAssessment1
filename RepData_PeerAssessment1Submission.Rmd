@@ -21,6 +21,65 @@ stepsdata = read.csv('activity.csv')
 By using the `na.rm` argument for the `mean` command, we can compute the mean easily:
 
 ```{r}
+#first we make an index of all the data entries that are 'NA'
 ismissing = is.na(stepsdata$steps)
-aggregate(stepsdata$steps[!ismissing], list(stepsdata$date[!ismissing]), sum, na.rm = TRUE)
+
+#then the aggregate function will give us the totals by date for us to average.
+dayssummed = aggregate(stepsdata$steps[!ismissing], list(stepsdata$date[!ismissing]), sum, na.rm = TRUE)
+
+#Now laslty we can make our histogram:
+
+hist(dayssummed$x, seq(0,25000, 1250),
+     #and of course we have to make it pretty
+     main = "Histogram of Total Steps Per Day",
+     xlab = "Total Steps per Day")
+
+#now let's calculate our median and mean:
+mean(dayssummed$x)
+median(dayssummed$x)
+
+
+#now I add mean and median lines to the graph so that we can see visually where they lie
+abline(v = mean(dayssummed$x), col = rgb(1, .2, 0, 1), lwd = 3)
+abline(v = median(dayssummed$x), col = rgb(.3, .3, 1, 1), lwd = 2 , lty = 8)
+legend( 'topright', c("Median", "Mean"), lty = c(8, 1), lwd = c(3,3), col = c(rgb(.3, .3, 1, 1), rgb(1, .2, 0, 1)))
+
+```
+
+As you can see, our mean of `r format(mean(dayssummed$x), digits = 7)` steps per day is nearly equal to the data's median at `r median(dayssummed$x)` steps per day.
+
+# What is the average daily activity pattern?
+
+To find out what 5-minute interval has the highest average amount of steps, we will need to aggregate our data by the interval, instead of by the day like the above code chunk.
+
+```{r}
+# calculating the mean with the missing values becomes trivial by using the "na.rm" parameter
+intervalmeans = aggregate(stepsdata$steps, list(stepsdata$interval), mean, na.rm = TRUE)
+
+#labels for the X axis
+xlabels = rep("", 25)
+
+for (num in seq(0, 24, 2)) {
+  xlabels[num+1] = paste(num, ':00', sep = '') 
+}
+
+#get maximum value interval
+maxinterval = intervalmeans$Group.1[intervalmeans$x == max(intervalmeans$x)]
+
+#the plot
+plot(unique(stepsdata$interval), intervalmeans$x, type = 'l', xaxp = c(0, 2400, 25), xaxt = 'n', xlab = "Time (Military Format)", main = "Time of Day versus Average Number of Steps", ylab = "Average number of steps in 5-minute interval", col = 'blue')
+abline(v = intervalmeans$Group.1[intervalmeans$x == max(intervalmeans$x)], lwd = 2, col = 'red')
+#the plot beauty salon
+axis(1, at = seq(0, 2400, 100), labels = xlabels, las = 2)
+legend('topright', 'Time with Highest \n Average number of steps', col = 'red' ,lwd = 2)
+```
+
+As seen on the above plot, we can see that the time with the highest average number of steps is `r paste(substr(maxinterval, 0,1), substr(maxinterval, nchar(maxinterval)-1, nchar(maxinterval)+1), sep = ':')`.
+
+#Imputing Missing Values
+
+To impute the missing values, I've decided to replace the missing values with the average number of steps for the time interval of the missing value. This way, the values added to the set of data for any given day will be representative of a typical number of steps for that time in the day. To do this, I use the code below:
+
+```{r}
+
 ```
