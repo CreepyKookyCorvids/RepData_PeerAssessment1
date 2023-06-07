@@ -1,0 +1,29 @@
+---
+title: "RepData_PeerAssessment1:Draft"
+author: "CrankyKookyCorvids"
+date: "2023-06-07"
+output: html_document
+---
+
+Reproducable Research: Project 1
+
+===
+# Loading in the data
+
+Loading the data is pretty simple using the `read.csv()` command below.
+
+```{r}
+stepsdata = read.csv('activity.csv')
+```
+
+# What is the mean number of steps taken per day?
+
+By using the `na.rm` argument for the `mean` command, we can compute the mean easily:
+
+```{r}
+uniquedates = unique(stepsdata$date)
+
+for (day in uniquedates) {
+  daysteps = sum()
+}
+```
