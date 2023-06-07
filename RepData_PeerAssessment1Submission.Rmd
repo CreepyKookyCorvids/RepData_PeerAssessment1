@@ -21,9 +21,6 @@ stepsdata = read.csv('activity.csv')
 By using the `na.rm` argument for the `mean` command, we can compute the mean easily:
 
 ```{r}
-uniquedates = unique(stepsdata$date)
-
-for (day in uniquedates) {
-  daysteps = sum()
-}
+ismissing = is.na(stepsdata$steps)
+aggregate(stepsdata$steps[!ismissing], list(stepsdata$date[!ismissing]), sum, na.rm = TRUE)
 ```
